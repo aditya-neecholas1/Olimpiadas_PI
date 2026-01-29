@@ -1,0 +1,14 @@
+# Ignorar arquivos csv
+*.csv
+Clean-data/
+
+# Ignorar executáveis e compilação 
+# Windows
+*.exe
+*.obj
+# Linux/Mac
+*.out
+*.o
+ 
+ Olimpíadas_PI
+ main
