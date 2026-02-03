@@ -11,7 +11,7 @@ int main() {
     esporte[strcspn(esporte, "\n")] = '\0';
     int quantidade;
     Pais* paises = criarPaises(&quantidade);
-    contarMedalhasPorPais(paises, esporte);
+    contarMedalhasPorPais(paises, quantidade, esporte);
     ordenarPorMedalhas(paises, quantidade);
     if (paises[0].medalhas == 0) {
         printf("Esse esporte não existe, parça.\n");

@@ -10,7 +10,7 @@ int separarCampos(char* lista, char campos[][64], int camposMax);
 
 Pais* criarPaises(int* quantidade);
 
-void contarMedalhasPorPais(Pais* paises, char* esporte);
+void contarMedalhasPorPais(Pais* paises, int quantidade, char* esporte);
 
 int compararPaises(const void* primeiro, const void* segundo);
 
