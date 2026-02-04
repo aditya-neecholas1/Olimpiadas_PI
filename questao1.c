@@ -164,3 +164,81 @@ int compararPaises(const void* primeiro, const void* segundo) {
 void ordenarPorMedalhas(Pais* paises, int quantidade) {
     qsort(paises, quantidade, sizeof(Pais), compararPaises);
 }
+
+
+/* FUNÇÕES QUE PODEM AJUDAR!!*/
+
+
+int todosOsNocsDe(char nomepais[50], char NOCs[][4]){
+    /* Abrindo o arquivo que contém os dados acerca dos NOCs.*/
+    FILE *arquivosnocs = fopen("noc_regions.csv", "r");
+    if (arquivosnocs == NULL) {
+        printf("Erro ao abrir arquivo\n");
+        return -1;
+    }
+
+    char linha[1024];
+    /* Ignorando o cabeçalho. */
+    fgets(linha, sizeof(linha), arquivosnocs);
+    int i = 0;
+    while(fgets(linha, sizeof(linha), arquivosnocs) != NULL){
+        /* Tratando a linha lida. */
+        linha[strcspn(linha, "\n")] = '\0';
+        /* Declarando uma array que irá receber os campos das linhas do arquivo cvs: */
+        char campos[3][1024];
+        separaLinhaCvs(linha,campos, 3);
+        /* Armazenando os campos pertinentes: */
+        char *NOC = campos[0];
+        char *pais = campos[1];
+        if(strcmp(nomepais, pais) == 0){
+            strcpy(NOCs[i], NOC);
+            i++;
+        }
+    }
+    fclose(arquivosnocs);
+    return i;
+}
+
+int quantasMedalhas(char nomepais[50]){
+    /* Usando a função todosOsNocsDe para acessar todos os NOCs de um país
+    ao longo de todas as edições. */
+    char NOCs[10][4];
+    int quantosNocs = todosOsNocsDe(nomepais, NOCs);
+    /*Analisando, então, o arquivo de resultados das Olimpíadas, de modo a comparar o NOC dos
+    atletas medalhistas com o do país escolhido. */
+    FILE* results = fopen("results.csv", "r");
+    /* Testando se o arquivo foi aberto com sucesso...*/
+    if (results == NULL){
+        printf("Erro ao abrir results\n");
+        return -1;
+    }
+
+    char linha[1024];
+    /* Ignorando o cabeçalho do arquivo... */
+    fgets(linha, sizeof(linha), results);
+    int totaldemedalhas = 0;
+    while(fgets(linha, sizeof(linha), results) != NULL){
+        /* Tratando a linha lida. */
+        linha[strcspn(linha, "\n")] = '\0';
+         /* Declarando uma array que irá receber os campos das linhas do arquivo cvs: */
+        char campos[10][1024];
+        separaLinhaCvs(linha, campos, 10);
+        /* Armazenando os campos pertinentes: */
+        char *Medal = campos[4];
+        char *NOC = campos[7];
+        /* Percorrendo a array de NOCs para averiguar a compatibilidade do campo NOC da linha
+        com o de algum NOC do país.*/
+        for(int i = 0; i < quantosNocs; i++){
+            /* Se o atleta for de um NOC do país escolhido e o campo Medal não for vazio 
+            (não ganhou medalha), a quantidade de medalhas do país é incrementada. */
+            if (strcmp(NOC, NOCs[i]) == 0){
+                if (campos[4][0] != '\0') {
+                totaldemedalhas++;
+                }
+            }
+        }
+    }
+    fclose(results);
+    /* Retornando o total de medalhas do país. */
+    return totaldemedalhas;
+}
