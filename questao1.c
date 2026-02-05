@@ -30,10 +30,7 @@ int separarCampos(char *linha, char campos[][64], int camposMax) {
         } else {
             /* Se algo diferente de vírgula ou algo dentro de aspas é percorrido, este caractere
             é copiado como parte do campo. */
-            //Acrescentado: verifica se não vai passar do tamanho do campo (63 caracteres + '\0')
-            if(j <63) {
             campos[k][j++] = linha[i];
-            }
         }
         i++;
     }
@@ -105,9 +102,6 @@ Pais* criarPaises(int* quantidade) {
         // Incrementa o índice para a próxima inserção
         indice++;
     }
-
-    fclose(noc); // Acrescimo: fecha o arquivo após terminar de ler.
-
     // Altera o valor apontado por 'quantidade', que passa a conter o número total de países lidos
     *quantidade = indice;
     // Retorna a referência desse vetor de países
@@ -157,9 +151,6 @@ void contarMedalhasPorPais(Pais* paises, int quantidade, char* esporte) {
             }
         }
     }
-
-    fclose (results); // Fechamento do arquivo
-    
 }
 // Função de comparação para o países tendo como critério o número total de medalhas
 int compararPaises(const void* primeiro, const void* segundo) {
