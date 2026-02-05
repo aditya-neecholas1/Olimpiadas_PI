@@ -30,7 +30,10 @@ int separarCampos(char *linha, char campos[][64], int camposMax) {
         } else {
             /* Se algo diferente de vírgula ou algo dentro de aspas é percorrido, este caractere
             é copiado como parte do campo. */
+            //Acrescentado: verifica se não vai passar do tamanho do campo (63 caracteres + '\0')
+            if(j <63) {
             campos[k][j++] = linha[i];
+            }
         }
         i++;
     }
