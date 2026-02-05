@@ -26,7 +26,7 @@ void questao1exe(){
     }
     printf("RANKING DOS PAISES QUE MAIS RECEBEM MEDALHAS EM: %s\n", esporte);
     for (int i = 1; i <= 10; i++) {
-        printf("%s recebeu %d medalhas\n", (paises + i)->noc, (paises + i)->medalhas);
+        printf("%dº - %s: %d medalhas\n", i, (paises + i)->nome, (paises + i)->medalhas);
     }
     printf("Pressione Enter para voltar.");
     getchar();
