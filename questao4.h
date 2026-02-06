@@ -15,7 +15,7 @@ typedef struct {
 
 //Criando um 'protótipo' das funções utilizadas no arquivo de implementação abaixo
 
-void processarArquivo (const char *nomeArquivo, Pais paises[], int *numPaises);
+void processarArquivo (Pais paises[], int *numPaises);
 void ordenarPaisesDecrescente(Pais paises[], int numPaises);
 void listarPaises(Pais paises[], int numPaises);
 int encontrarPais(Pais paises[], int numPaises, const char *nomePais);

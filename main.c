@@ -5,6 +5,7 @@
 #include "questao1.h"
 #include "questao2.h"
 #include "questao3.h"
+#include "questao4.h"
 
 int main() {
     int opcao;
@@ -14,7 +15,7 @@ int main() {
         printf("1 - Questao 1 - Ranking dos países por esporte\n");
         printf("2 - Questao 2 - Ranking de 10 países por número de atletas\n");
         printf("3 - Questao 3 - ?\n");
-        printf("4 - Questao 4 - ?\n");
+        printf("4 - Questao 4 - Listagem dos países com mais atletas mulheres\n");
         printf("0 - Sair do programa\n");
         printf("Escolha uma opcao: ");
         scanf("%d", &opcao);
@@ -25,10 +26,7 @@ int main() {
         } else if(opcao == 3){
             questao3exe();
         } else if(opcao == 4){
-            printf("Questao 4 ainda nao foi implementada.\n");
-            printf("Aperte Enter para voltar ao menu.");
-            limparBuffer();
-            getchar();
+            questao4exe();
         } else if(opcao == 0){
             printf("Fim do programa. Encerrando...\n");
             break;
@@ -109,5 +107,22 @@ void questao3exe(){
     printf("%d Medalhas de prata!\n", Medalhistas[0].medalhaPrata);
     printf("%d Medalhas de bronze!\n", Medalhistas[0].medalhaBronze);
     printf("Pressione Enter para voltar.");
+    getchar();
+}
+
+void questao4exe(){
+
+    /*4ª questão: Liste os países com mais atletas mulheres do que homens e ordene-os de maneira decrescente.*/
+    limparBuffer();
+    Pais paises [MAX_PAISES];
+    int numPaises = 0;
+    printf("ANÁLISE DE ATLETAS POR PAÍS E GÊNERO\n");
+    printf("Você quer conferir a análise? Então pressione Enter");
+    /*Processando o arquivo para leitura do csv e preenchimento do array*/
+    processarArquivo(paises, &numPaises); 
+    printf("Seu pedido é uma ordem! Aqui está o total de países com mais atletas mulheres do que homens:");
+    /*Usa os dados que foram preenchidos e finaliza*/
+    listarPaises(paises, &numPaises);
+    printf("O que achou do resultado?");
     getchar();
 }
