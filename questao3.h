@@ -17,6 +17,6 @@ int jaEstaNaArray(Atleta* medalhistas, char *ID, int tamanhodaarrray);
 
 int comparaAtletas(const void *atletaA, const void *atletaB);
 
-Atleta* todosAtletasMedalhistas(char *esporteescolhido);
+Atleta* todosAtletasMedalhistas(char *esporteescolhido, int *teste);
 
 #endif

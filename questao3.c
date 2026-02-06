@@ -63,7 +63,7 @@ int comparaAtletas(const void *atletaA, const void *atletaB){
 
 /* Função que recebe um esporte e devolve uma array contendo o ID e as medalhas dos atletas medalhistas
 facilitando o encontro posterior do mais medalhista e da exibição de suas medalhas. */
-Atleta* todosAtletasMedalhistas(char *esporteescolhido){
+Atleta* todosAtletasMedalhistas(char *esporteescolhido, int *teste){
     FILE* ARQatletas = fopen("results.csv", "r");
     if(ARQatletas == NULL){
         return NULL;
@@ -146,6 +146,9 @@ Atleta* todosAtletasMedalhistas(char *esporteescolhido){
             }
         }
     }
+    /* Indicando que "teste" referencia um mesmo valor que "contador", para que, no caso do usuário digitar um esporte
+    inexistente, seu valor seja 0..*/
+    *teste = contador;
     /* Ordenando os atletas utilizando como parâmetro de comparação a função comparaAtletas anteriormente
     criada, reposicionando os atletas em ordem descrescente, daquele com mais medalhas até aquele com menos.
     Isso, garantindo que o mais medalhista sempre seja o colocado em indice 0. */

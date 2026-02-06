@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include "questao1.h"
 #include "questao2.h"
+#include "questao3.h"
 
 int main() {
     int opcao;
@@ -22,10 +23,7 @@ int main() {
         } else if(opcao == 2){
             questao2exe();
         } else if(opcao == 3){
-            printf("Questao 3 ainda nao foi implementada.\n");
-            printf("Aperte Enter para voltar ao menu.");
-            limparBuffer();
-            getchar();
+            questao3exe();
         } else if(opcao == 4){
             printf("Questao 4 ainda nao foi implementada.\n");
             printf("Aperte Enter para voltar ao menu.");
@@ -84,6 +82,32 @@ void questao2exe(){
     for (int i = 0; i < 10; i++) {
         printf("%dº - %s: %d atletas cadastrados\n", i + 1, (paisesEscolhidos + i)->noc, (paisesEscolhidos + i)->atletas);
     }
+    printf("Pressione Enter para voltar.");
+    getchar();
+}
+
+void questao3exe(){
+    /*3ª questão: Para um determinado esporte, liste as medalhas conquistadas pelo atleta que chegou ao pódio mais vezes.*/
+    limparBuffer();
+    printf("Insira o nome do esporte a ser analisado: \n");
+    char esporte[50];
+    /* Recebendo do usuário o nome do esporte que este deseja obter informações.*/
+    fgets(esporte, sizeof(esporte), stdin);
+    /* Realizando o tratamento da linha digitada pelo usuário. */
+    esporte[strcspn(esporte, "\n")] = '\0';
+    int teste;
+    Atleta* Medalhistas = todosAtletasMedalhistas(esporte, &teste);
+    /* Testando se o usuário inseriu um esporte válido. */
+    if(teste == 0){
+        printf("Esporte inexistente.\n");
+        return;
+    }
+    int totalmedalhas = Medalhistas[0].medalhaBronze + Medalhistas[0].medalhaOuro + Medalhistas[0].medalhaPrata;
+    /* Como a array já está ordenada em ordem decrescente, o mais medalhista está na posição de índice 0.*/
+    printf("Com um total de %d medalhas, %s é o/a atleta mais agraciado do esporte: %s. Isso, sendo: \n", totalmedalhas, Medalhistas[0].nome ,esporte);
+    printf("%d Medalhas de ouro!\n", Medalhistas[0].medalhaOuro);
+    printf("%d Medalhas de prata!\n", Medalhistas[0].medalhaPrata);
+    printf("%d Medalhas de bronze!\n", Medalhistas[0].medalhaBronze);
     printf("Pressione Enter para voltar.");
     getchar();
 }
