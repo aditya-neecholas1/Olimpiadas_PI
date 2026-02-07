@@ -6,7 +6,7 @@
 /* Os includes incluem: biblioteca padrão de entrada e saída, de manipulação de strings, biblioteca padrão e o arquivo de cabeçalho da questão*/
 /*Abaixo declarei uma função para receber o array de países, quantidade de países e nome do país, dentro dela tem um loop que percorre os países cadastrados e retorna 0 
 quando o nome do país e a posição são iguais. Assim evita repetição*/
-int encontrarPais (Pais paises[], int numPaises, const char *nomePais){
+int encontrarPais (PaisGenero paises[], int numPaises, const char *nomePais){
     for (int inteiro= 0; inteiro< numPaises; inteiro++){
         if (strcmp (paises[inteiro].nome, nomePais) == 0){
             return inteiro;
@@ -51,10 +51,10 @@ void transformarLinha (char *linha, char campos[][TAM_LINHA], int *numCampos){
  de leitura, guarda o ponteiro em 'arquivo', verifica se há erro, lê o cabeçalho do arquivo e ignora, e lê as linhas seguintes até o fim do arquivo, nesse caso 'NULL'. 
  */
 
-void processarArquivo(Pais paises[], int *numPaises){ 
+void processarArquivo(PaisGenero paises[], int *numPaises){ 
     FILE *arquivo = fopen ("bios.csv", "r"); 
     if (arquivo == NULL){
-        PRINTF("Erro ao abrir o arquivo bios.csv\n");
+        printf("Erro ao abrir o arquivo bios.csv\n");
         exit(1);
     }
     char linha[TAM_LINHA];
@@ -95,7 +95,7 @@ void processarArquivo(Pais paises[], int *numPaises){
             if (strcmp(sexo, "Male")==0){
                 paises[indicePais].atletasMasculinos++;
             }
-            else if(strcmp (sexo, "Female"==0)){
+            else if(strcmp (sexo, "Female") == 0){
                 paises[indicePais].atletasFemininos++;
             }
         }
@@ -106,12 +106,12 @@ void processarArquivo(Pais paises[], int *numPaises){
     }
     /*Essa função foi criada para ordenar os países por quantidade de atletas femininas em ordem decrescente, então começa pelo maior, então ele vai comparando os elementos em loop
      e diminuindo já que o final está ordenado. Se a quantidade de atletas femininas atual é menor que a próxima, então troca a posição.*/
-    void ordenarPaisesDecrescente (Pais paises[], int numPaises){
+    void ordenarPaisesDecrescente (PaisGenero paises[], int numPaises){
 
         for (int inteiro1 = 0 ; inteiro1 < numPaises - 1; inteiro1++) {
             for (int inteiro2 = 0; inteiro2<numPaises-inteiro1-1; inteiro2++){
                 if (paises[inteiro2].atletasFemininos < paises[inteiro2 + 1]. atletasFemininos){
-                     Pais temporario = paises[inteiro2];
+                     PaisGenero temporario = paises[inteiro2];
                      paises[inteiro2] = paises[inteiro2 +1];
                      paises[inteiro2 + 1] = temporario;
                 }
@@ -121,8 +121,8 @@ void processarArquivo(Pais paises[], int *numPaises){
     }
 
     /*Essa função abaixo foi criada para filtrar, ordenar e por fim exibir os países que contém mais mulheres do que homens, verificando as condições falsas e imprimindo o resultado das verdadeiras.*/
-    void listarPaises (Pais paises[], int numPaises){
-        Pais paisesComMaisMulheres[MAX_PAISES];
+    void listarPaises (PaisGenero paises[], int numPaises){
+        PaisGenero paisesComMaisMulheres[MAX_PAISES];
         int total= 0;
 
         for (int inteiro=0; inteiro<numPaises; inteiro++){
@@ -133,7 +133,7 @@ void processarArquivo(Pais paises[], int *numPaises){
         }
 
     /*Para melhor organização, coloquei uma ordenação crescente dos países com mais mulheres e imprime em tabela de maneira mais clara para o usuário.*/
-    ordenarPaisesDescrescente(paisesComMaisMulheres, total);
+    ordenarPaisesDecrescente(paisesComMaisMulheres, total);
 
     printf("PAÍSES QUE CONTÊM MAIS MULHERES DO QUE HOMENS\n");
 

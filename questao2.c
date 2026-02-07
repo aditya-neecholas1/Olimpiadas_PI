@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include "questao2.h"
 
-int separarCampos(char *linha, char campos[][64], int camposMax) {
+static int separarCampos(char *linha, char campos[][64], int camposMax) {
     /*A variável i vai percorrer a linha inteira,
     a variável j vai percorrer os caracteres do campo (por isso é resetada ao
     seu valor inicial de 0 a cada novo campo encontrado.),
@@ -44,37 +44,59 @@ int separarCampos(char *linha, char campos[][64], int camposMax) {
     return k + 1;
 }
 
-PaisAtletas* criarPaises(int *quantidade){
-    // São somente 10 paises a serem escolhidos
+// Aloca a memória para a lista de países e solicita a digitação dos nomes dos países pelo usuário.
+PaisAtletas* criarPaisesAtletas(int *quantidade){
+    // Alocação dinâmica para 10 países
     PaisAtletas* paisesEscolhidos = (PaisAtletas*) malloc(sizeof(PaisAtletas) * 10);
-    if(!paisesEscolhidos) return NULL;
-    printf("Digite o NOC dos paises desejados:\n");
+    if(!paisesEscolhidos) return NULL; // Checa se a alocação deu certo
+    printf("Digite o nome dos paises desejados (em ingles):\n");
     for(int i = 0; i < 10; i++){
-        printf("Pais %d: ", i+1);
-        scanf("%s", paisesEscolhidos[i].noc);
+        printf("Pais %d: ", i+1); // Orientação para o usuário
+        scanf("%s", paisesEscolhidos[i].noc); // Leitura dos nomes
         paisesEscolhidos[i].atletas = 0;
     }
-    *quantidade = 10;
+    *quantidade = 10; // Atualiza a variável de controle da quantidade (por padrão é 10)
     return paisesEscolhidos;
 }
 
+// Lê o arquivo bios.csv e realiza a contagem de atletas por país escolhidos previamente
 void contarAtletasPorPais(PaisAtletas* paises, int quantidade){
     FILE* arquivo = fopen("bios.csv", "r");
-    if(!arquivo) return;
+    if(!arquivo) return; // Checa se a leitura foi realizada corretamente
     char linha[1000];
     char campos[10][64];
-    fgets(linha, sizeof(linha), arquivo);
+    fgets(linha, sizeof(linha), arquivo); // Descarta o cabeçalho
+    // Loop de leitura
     while(fgets(linha, sizeof(linha), arquivo) != NULL){
         separarCampos(linha, campos, 10);
+        // O nome do país/NOC está na coluna 6 do arquivo
         char* paisLido = campos[6];
         for(int i = 0; i < quantidade; i++){
-            if(strcmp(paises[i].noc, paisLido) == 0){
+            /* Verifica se o nome digitado está contido no nome,
+            prevenindo que casos como "Russia Federation" não sejam identificados
+            */
+            if(strstr(paisLido, paises[i].noc) != NULL){
                 paises[i].atletas++;
-                break;
+                break; // Casho encontre, não precisa testar para os outros países
             }
         }
     }
     fclose(arquivo);
 }
 
+void ordenarPorAtletas(PaisAtletas* paises, int quantidade){
+    /* Utilização do qsort padrão do C para ordenar o vetor, utilizando uma função auxiliar
+    compararPaisesAtletas como parâmetro */ 
+    qsort(paises, quantidade, sizeof(PaisAtletas), compararPaisesAtletas);
+}
+int compararPaisesAtletas(const void* primeiro, const void* segundo) {
+    // Converte os ponteiros para o tipo 'PaisAtletas'
+    const PaisAtletas *p1 = primeiro;
+    const PaisAtletas *p2 = segundo;
+    // Caso o número de atletas de cada país for diferente, ordena pelo maior número
+    if (p1->atletas != p2->atletas)
+        return p2->atletas - p1->atletas;
+    // Em caso de empate, compara os países pelo nome (ordem lexicográfica)
+    return strcmp(p1->noc, p2->noc);
+}
  

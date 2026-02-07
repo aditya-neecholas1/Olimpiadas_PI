@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "questao1.h"
 // Para um esporte escolhido, mostre o ranking dos países com mais medalhas nesse esporte.
-int separarCampos(char *linha, char campos[][64], int camposMax) {
+static int separarCampos(char *linha, char campos[][64], int camposMax) {
     /*A variável i vai percorrer a linha inteira,
     a variável j vai percorrer os caracteres do campo (por isso é resetada ao
     seu valor inicial de 0 a cada novo campo encontrado.),

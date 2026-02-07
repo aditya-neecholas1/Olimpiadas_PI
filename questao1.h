@@ -11,7 +11,7 @@ typedef struct {
     int medalhas;
 } Pais;
 
-int separarCampos(char* lista, char campos[][64], int camposMax);
+static int separarCampos(char* lista, char campos[][64], int camposMax);
 
 Pais* criarPaises(int* quantidade);
 

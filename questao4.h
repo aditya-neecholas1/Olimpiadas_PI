@@ -11,14 +11,14 @@ typedef struct {
     char nome [MAX_NOME];
     int atletasFemininos;
     int atletasMasculinos;
-} Pais;
+} PaisGenero;
 
 //Criando um 'protótipo' das funções utilizadas no arquivo de implementação abaixo
 
-void processarArquivo (Pais paises[], int *numPaises);
-void ordenarPaisesDecrescente(Pais paises[], int numPaises);
-void listarPaises(Pais paises[], int numPaises);
-int encontrarPais(Pais paises[], int numPaises, const char *nomePais);
+void processarArquivo (PaisGenero paises[], int *numPaises);
+void ordenarPaisesDecrescente(PaisGenero paises[], int numPaises);
+void listarPaises(PaisGenero paises[], int numPaises);
+int encontrarPais(PaisGenero paises[], int numPaises, const char *nomePais);
 
 #endif
 

@@ -6,13 +6,13 @@ typedef struct {
     int atletas;
 } PaisAtletas;
 
-int separarCampos(char* lista, char campos[][64], int camposMax);
+static int separarCampos(char* lista, char campos[][64], int camposMax);
 
 void contarAtletasPorPais(PaisAtletas* paises, int quantidade);
 
-PaisAtletas* criarPaises(int *quantidade);
+PaisAtletas* criarPaisesAtletas(int *quantidade);
 
-int compararPaises(const void* primeiro, const void* segundo);
+int compararPaisesAtletas(const void* primeiro, const void* segundo);
 
 void ordenarPorAtletas(PaisAtletas* paises, int quantidade);
 
