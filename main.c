@@ -102,7 +102,7 @@ int main() {
         printf("Digite um dos numeros a seguir para utilizar o programa:\n");
         printf("1 - Questao 1 - Ranking dos países por esporte\n");
         printf("2 - Questao 2 - Ranking de 10 países por número de atletas\n");
-        printf("3 - Questao 3 - ?\n");
+        printf("3 - Questao 3 - Listagem das medalhas conquistadas pelo atleta que chegou ao pódio mais vezes\n");
         printf("4 - Questao 4 - Listagem dos países com mais atletas mulheres\n");
         printf("0 - Sair do programa\n");
         printf("Escolha uma opcao: ");
