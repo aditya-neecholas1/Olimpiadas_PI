@@ -2,6 +2,11 @@
 #include <string.h>
 #include <stdlib.h>
 #include "questao1.h"
+
+static void limparBuffer(){
+    int limpeza;
+    while((limpeza = getchar()) != '\n' && limpeza != EOF);
+}
 // Para um esporte escolhido, mostre o ranking dos países com mais medalhas nesse esporte.
 static int separarCampos(char *linha, char campos[][64], int camposMax) {
     /*A variável i vai percorrer a linha inteira,
@@ -197,4 +202,28 @@ int compararPaises(const void* primeiro, const void* segundo) {
 void ordenarPorMedalhas(Pais* paises, int quantidade) {
     // O qsort() altera um vetor, ordenando-o por meio de uma função de comparação
     qsort(paises, quantidade, sizeof(Pais), compararPaises);
+}
+
+void questao1exe(){
+    // 1º questão: Para um esporte escolhido, mostre o ranking dos países com mais medalhas nesse esporte.
+    limparBuffer();
+    printf("Digite o nome do esporte que deseja consultar\n> ");
+    char esporte[32];
+    fgets(esporte, sizeof(esporte), stdin);
+    esporte[strcspn(esporte, "\n")] = '\0';
+    int quantidade;
+    Pais* paises = criarPaises(&quantidade);
+    contarMedalhasPorPais(paises, quantidade, esporte);
+    ordenarPorMedalhas(paises, quantidade);
+    if (paises[0].medalhas == 0) {
+        printf("Esse esporte não existe, parça.\n");
+        return;
+    }
+    printf("RANKING DOS PAISES QUE MAIS RECEBEM MEDALHAS EM: %s\n", esporte);
+    for (int i = 1; i <= 10; i++) {
+        printf("%dº - %s: %d medalhas\n", i, (paises + i)->nome, (paises + i)->medalhas);
+    }
+    free(paises);
+    printf("Pressione Enter para voltar.");
+    getchar();
 }

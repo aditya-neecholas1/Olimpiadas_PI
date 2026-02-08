@@ -19,6 +19,7 @@ void processarArquivo (PaisGenero paises[], int *numPaises);
 void ordenarPaisesDecrescente(PaisGenero paises[], int numPaises);
 void listarPaises(PaisGenero paises[], int numPaises);
 int encontrarPais(PaisGenero paises[], int numPaises, const char *nomePais);
+void questao4exe();
 
 #endif
 

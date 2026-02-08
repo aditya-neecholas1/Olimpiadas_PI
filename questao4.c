@@ -3,6 +3,11 @@
 #include <stdlib.h>
 #include "questao4.h"
 
+static void limparBuffer(){
+    int limpeza;
+    while((limpeza = getchar()) != '\n' && limpeza != EOF);
+}
+
 /* Os includes incluem: biblioteca padrão de entrada e saída, de manipulação de strings, biblioteca padrão e o arquivo de cabeçalho da questão*/
 /*Abaixo declarei uma função para receber o array de países, quantidade de países e nome do país, dentro dela tem um loop que percorre os países cadastrados e retorna 0 
 quando o nome do país e a posição são iguais. Assim evita repetição*/
@@ -27,12 +32,13 @@ void transformarLinha (char *linha, char campos[][TAM_LINHA], int *numCampos){
     /*O loop feito abaixo vai percorrer até encontrar o fim da string "como toda string finaliza em '\0', ou uma quebra de linha, ou um retorno"*/
     while (linha[inteiro] != '\0' && linha[inteiro] != '\n' && linha[inteiro] != '\r'){
         if (linha[inteiro]=='"'){ // Se encontrar aspas, ignora ela.
-            dentroAspas =! dentroAspas;
+            dentroAspas = !dentroAspas;
             inteiro++;
             continue;
         }
         if (linha[inteiro] ==',' && !dentroAspas){ //Se encontrou vírgula e não está dentro de aspas, significa que é separador de campo
             campos[campoAtual][posicaoCampo] = '\0';
+            campoAtual++;
             posicaoCampo = 0;
             inteiro++;
             continue;
@@ -152,3 +158,21 @@ void processarArquivo(PaisGenero paises[], int *numPaises){
     }
 
     }
+
+void questao4exe(){
+
+    /*4ª questão: Liste os países com mais atletas mulheres do que homens e ordene-os de maneira decrescente.*/
+    limparBuffer();
+    PaisGenero paises [MAX_PAISES];
+    int numPaises = 0;
+    printf("ANÁLISE DE ATLETAS POR PAÍS E GÊNERO\n");
+    printf("Você quer conferir a análise? Então pressione Enter");
+    getchar();
+    /*Processando o arquivo para leitura do csv e preenchimento do array*/
+    processarArquivo(paises, &numPaises); 
+    printf("Seu pedido é uma ordem! Aqui está o total de países com mais atletas mulheres do que homens:");
+    /*Usa os dados que foram preenchidos e finaliza*/
+    listarPaises(paises, numPaises);
+    printf("O que achou do resultado?");
+    getchar();
+}

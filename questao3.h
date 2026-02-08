@@ -11,12 +11,12 @@ typedef struct {
     int medalhaBronze;
 } Atleta;
 
-static int separarCampos(char* lista, char campos[][64], int camposMax);
-
 int jaEstaNaArray(Atleta* medalhistas, char *ID, int tamanhodaarrray);
 
 int comparaAtletas(const void *atletaA, const void *atletaB);
 
 Atleta* todosAtletasMedalhistas(char *esporteescolhido, int *teste);
+
+void questao3exe();
 
 #endif
