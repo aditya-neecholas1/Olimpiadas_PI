@@ -9,6 +9,13 @@ Clean-data/
 # Linux/Mac
 *.out
 *.o
- 
- Olimpíadas_PI
- main
+
+# Arquivos do Gnuplot
+*.dat
+
+Olimpíadas_PI
+main
+questao1
+questao2
+questao3
+questao4
