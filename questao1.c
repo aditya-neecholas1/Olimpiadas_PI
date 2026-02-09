@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "questao1.h"
 
-static void limparBuffer(){
+void limparBuffer() {
     int limpeza;
     while((limpeza = getchar()) != '\n' && limpeza != EOF);
 }
@@ -203,7 +203,53 @@ void ordenarPorMedalhas(Pais* paises, int quantidade) {
     // O qsort() altera um vetor, ordenando-o por meio de uma função de comparação
     qsort(paises, quantidade, sizeof(Pais), compararPaises);
 }
+void desenharGraficoTop10(Pais* paises, const char* esporte) {
+    /* Cria arquivo de dados */
+    FILE* dados = fopen("dados_grafico.dat", "w");
+    if (!dados) {
+        printf("Erro ao criar arquivo de dados do grafico.\n");
+        return;
+    }
 
+    /* Escreve apenas os 10 primeiros países */
+    for (int i = 0; i < 10; i++) {
+        fprintf(dados, "\"%s\" %d\n", paises[i].nome, paises[i].medalhas);
+    }
+
+    fclose(dados);
+
+    /* Abre o gnuplot */
+    FILE* gp = POPEN("gnuplot", "w");
+    if (!gp) {
+        printf("Erro ao abrir o gnuplot.\n");
+        return;
+    }
+
+    /* Configurações do gráfico */
+    fprintf(gp, "set terminal wxt size 900,500\n");
+    fprintf(gp, "set title 'Top 10 paises com mais medalhas em %s'\n", esporte);
+    fprintf(gp, "set xlabel 'Paises'\n");
+    fprintf(gp, "set ylabel 'Numero de medalhas'\n");
+
+    fprintf(gp, "set style data histograms\n");
+    fprintf(gp, "set style fill solid 0.8 border -1\n");
+    fprintf(gp, "set boxwidth 0.7\n");
+
+    fprintf(gp, "set grid ytics\n");
+    fprintf(gp, "set xtics rotate by -45\n");
+
+    fprintf(gp,
+        "plot 'dados_grafico.dat' using 2:xtic(1) "
+        "title 'Medalhas'\n"
+    );
+
+    fflush(gp);
+
+    printf("\nGrafico aberto. Pressione ENTER para fechar...\n");
+    getchar();
+
+    PCLOSE(gp);
+}
 void questao1exe(){
     // 1º questão: Para um esporte escolhido, mostre o ranking dos países com mais medalhas nesse esporte.
     limparBuffer();
@@ -220,9 +266,10 @@ void questao1exe(){
         return;
     }
     printf("RANKING DOS PAISES QUE MAIS RECEBEM MEDALHAS EM: %s\n", esporte);
-    for (int i = 1; i <= 10; i++) {
-        printf("%dº - %s: %d medalhas\n", i, (paises + i)->nome, (paises + i)->medalhas);
+    for (int i = 0; i < 10; i++) {
+        printf("%dº - %s: %d medalhas\n", i + 1, (paises + i)->nome, (paises + i)->medalhas);
     }
+    desenharGraficoTop10(paises, esporte);
     free(paises);
     printf("Pressione Enter para voltar.");
     getchar();
