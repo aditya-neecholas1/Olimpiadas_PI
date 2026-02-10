@@ -1,4 +1,3 @@
-// Ideia: Para um determinado esporte, liste as medalhas conquistadas pelo atleta mais medalhista.
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -164,6 +163,73 @@ Atleta* todosAtletasMedalhistas(char *esporteescolhido, int *teste){
     return Medalhistas;
 }
 
+/* Função que recebe o struct do atleta mais medalhista e cria um arquivo com seus dados relevates.*/
+void criaArquivoDados(Atleta medalhista) {
+    FILE *arqDados = fopen("dados_medalhista.txt", "w");
+    if(arqDados == NULL){
+        printf("Não foi possível criar o arquivo de dados.");
+        return;
+    }
+    
+    /* Criando o arquivo e separando os dados em colunas, tal que a primeira irá conter o tipo de medalha,
+    a segunda suas respectivas quantidades e a terceira a coloração das barras que representarão as mesmas. */
+    fprintf(arqDados, "\"Ouro\" %d \"#FFD700\"\n", medalhista.medalhaOuro);
+    fprintf(arqDados, "\"Prata\" %d \"#C0C0C0\"\n", medalhista.medalhaPrata);
+    fprintf(arqDados, "\"Bronze\" %d \"#925518\"\n", medalhista.medalhaBronze);
+    
+    fclose(arqDados);
+}
+
+/* Função que recebe o struct do atleta e o esporte para que tais informações possam ser usadas
+na confecção do gráfico. */
+void criarGrafico(Atleta medalhista, char *esporte) {
+    /* Utilizando a função anteriormente criada para fazer um arquivo com os dados
+    que serão utilizados para criar o gráfico*/
+    criaArquivoDados(medalhista);
+
+    /* Criando o arquivo .plt que originará o gráfico via gnuplot. */
+    FILE *script = fopen("scriptMedalhas.plt", "w");
+    if (script == NULL) {
+        printf("Erro ao criar o script do Gnuplot.\n");
+        return;
+    }
+
+    /* Configurando a saída: Definindo a altura e largura da imagem, fonte e forma de saída (png).*/
+    fprintf(script, "# Script para exibir as medalhas do atleta mais agraciado.\n");
+    fprintf(script, "set terminal wxt size 800,600 enhanced font 'Arial,12' title 'Grafico de Medalhas'\n");
+
+    /* Definindo o título do gráfico como o número de medalhas do atleta de um certo esporte.*/
+    fprintf(script, "set title 'Medalhas de %s\\n(Atleta mais vitorioso/a do esporte: %s)' font 'Arial,14 bold'\n", medalhista.nome, esporte);
+    /* Definindo o nome do eixo Y do gráfico.*/
+    fprintf(script, "set ylabel 'Quantidade de Medalhas'\n");
+    /* Definindo o nome do eixo X do gráfico.*/
+    fprintf(script, "set xlabel 'Tipo de Medalha'\n\n");
+
+    /* Definindo o preenchimento das barras. */
+    fprintf(script, "set style fill solid 0.8 border -1\n");
+    /* Estabelecendo a largura das barras.*/
+    fprintf(script, "set boxwidth 0.6\n");
+    /* Desenhando linhas "atrás" do gráfico para facilitar para o leitor das informações o valor indicado
+    pela altura da barra. */
+    fprintf(script, "set grid ytics\n");
+    /* Começando a partir do 0. */
+    fprintf(script, "set yrange [0:*]\n\n");
+
+    /* Estabelecendo a segunda coluna dos dados como a altura das barras, a primeira coluna como rótulo de cada
+    barra (ouro, prata ou bronze) e a terceira coluna como a cor de cada barra. */
+    fprintf(script, "plot 'dados_medalhista.txt' using 2:xtic(1):3 with boxes lc rgb variable notitle\n");
+
+    fclose(script);
+
+    /* Finalmente, executando a criação do gráfico: */
+    printf("\n Gerando imagem do grafico... \n");
+    int resultado = system("gnuplot -p scriptMedalhas.plt");
+    /* Utilizando da variável resultado para averiguar se a criação do gráfico ocorreu com sucesso ou não.*/
+    if (resultado != 0) {
+        printf("Erro ao executar o Gnuplot. \n");
+    }
+}
+
 void questao3exe(){
     /*3ª questão: Para um determinado esporte, liste as medalhas conquistadas pelo atleta que chegou ao pódio mais vezes.*/
     limparBuffer();
@@ -181,11 +247,25 @@ void questao3exe(){
         return;
     }
     int totalmedalhas = Medalhistas[0].medalhaBronze + Medalhistas[0].medalhaOuro + Medalhistas[0].medalhaPrata;
-    /* Como a array já está ordenada em ordem decrescente, o mais medalhista está na posição de índice 0.*/
-    printf("Com um total de %d medalhas, %s é o/a atleta mais agraciado do esporte: %s. Isso, sendo: \n", totalmedalhas, Medalhistas[0].nome ,esporte);
-    printf("%d Medalhas de ouro!\n", Medalhistas[0].medalhaOuro);
-    printf("%d Medalhas de prata!\n", Medalhistas[0].medalhaPrata);
-    printf("%d Medalhas de bronze!\n", Medalhistas[0].medalhaBronze);
-    printf("Pressione Enter para voltar.");
+    /*Perguntando se o usuário gostaria de ver o resultado no terminal ou em gráfico.*/
+    printf("Exibir gráfico?(S/N)");
+    char escolha; scanf(" %c", &escolha);
+    limparBuffer();
+    if(escolha == 'N' || escolha == 'n'){    
+        /* Como a array já está ordenada em ordem decrescente, o mais medalhista está na posição de índice 0.*/
+        printf("Com um total de %d medalhas, %s é o/a atleta mais agraciado do esporte: %s. Isso, sendo: \n", totalmedalhas, Medalhistas[0].nome ,esporte);
+        printf("%d Medalhas de ouro!\n", Medalhistas[0].medalhaOuro);
+        printf("%d Medalhas de prata!\n", Medalhistas[0].medalhaPrata);
+        printf("%d Medalhas de bronze!\n", Medalhistas[0].medalhaBronze);
+        printf("Pressione Enter para voltar.");
+        getchar();
+    } else if(escolha == 'S' || escolha == 's'){
+        /* Utilizando da função criarGrafico para exibir o gráfico dos dados obtidos. */
+        criarGrafico(Medalhistas[0], esporte);
+    }
+    /* Pausando para o usuário poder ver os resultados. */
+    printf("\nPressione Enter para voltar.");
     getchar();
+    /* Como foi usado malloc, é necessário usar free para evitar um possível vazamento de memória.*/
+    free(Medalhistas);
 }

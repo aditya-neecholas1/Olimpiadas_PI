@@ -17,6 +17,10 @@ int comparaAtletas(const void *atletaA, const void *atletaB);
 
 Atleta* todosAtletasMedalhistas(char *esporteescolhido, int *teste);
 
+void criaArquivoDados(Atleta medalhista);
+
+void criarGrafico(Atleta medalhista, char *esporte);
+
 void questao3exe();
 
 #endif
