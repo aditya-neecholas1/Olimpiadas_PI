@@ -29,6 +29,8 @@ int compararPaises(const void* primeiro, const void* segundo);
 
 void ordenarPorMedalhas(Pais* paises, int quantidade);
 
+void desenharGrafico(Pais* paises, char* esporte);
+
 void questao1exe();
 
 #endif

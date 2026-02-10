@@ -203,74 +203,82 @@ void ordenarPorMedalhas(Pais* paises, int quantidade) {
     // O qsort() altera um vetor, ordenando-o por meio de uma função de comparação
     qsort(paises, quantidade, sizeof(Pais), compararPaises);
 }
-void desenharGraficoTop10(Pais* paises, const char* esporte) {
-    /* Cria arquivo de dados */
+// Função que desenha o gráfico da questão, exibindo o resultado em forma de um gráfico de barras
+void desenharGrafico(Pais* paises, char* esporte) {
+    // Crie um arquivo que receberá as informações necessárias para a construção do gráfico
     FILE* dados = fopen("dados_grafico.dat", "w");
+    // Verifica se o arquivo foi criado corretamente
     if (!dados) {
         printf("Erro ao criar arquivo de dados do grafico.\n");
         return;
     }
-
-    /* Escreve apenas os 10 primeiros países */
+    // Percorre os 10 primeiros elementos da lista de países já ordenada e escreve os nomes e número de medalhas no arquivo
     for (int i = 0; i < 10; i++) {
         fprintf(dados, "\"%s\" %d\n", paises[i].nome, paises[i].medalhas);
     }
-
+    // Fecha o arquivo 
     fclose(dados);
-
-    /* Abre o gnuplot */
+    /* Abre um processo do gnuplot e cria um canal de comunicação, permitindo enviar comandos diretamente para ele via fprintf */
     FILE* gp = POPEN("gnuplot", "w");
+    // Verifica se o gnuplot foi aberto corretamente
     if (!gp) {
         printf("Erro ao abrir o gnuplot.\n");
         return;
     }
-
-    /* Configurações do gráfico */
-    fprintf(gp, "set terminal wxt size 900,500\n");
-    fprintf(gp, "set title 'Top 10 paises com mais medalhas em %s'\n", esporte);
-    fprintf(gp, "set xlabel 'Paises'\n");
-    fprintf(gp, "set ylabel 'Numero de medalhas'\n");
-
+    // Configurações do gráfico (Tamanho de fonte, textos, alinhamentos etc.)
+    fprintf(gp, "set terminal wxt size 900,600\n");
+    fprintf(gp, "set title 'Top 10 países com mais medalhas em %s' font ',16'\n", esporte);
+    fprintf(gp, "set xlabel 'Países' font ',14'\n");
+    fprintf(gp, "set ylabel 'Número de medalhas' font ',14'\n");
     fprintf(gp, "set style data histograms\n");
-    fprintf(gp, "set style fill solid 0.8 border -1\n");
-    fprintf(gp, "set boxwidth 0.7\n");
-
+    fprintf(gp, "set style fill solid 1 border -1\n");
+    fprintf(gp, "set boxwidth 2\n");
     fprintf(gp, "set grid ytics\n");
-    fprintf(gp, "set xtics rotate by -45\n");
-
+    fprintf(gp, "set xtics rotate by -30\n");
     fprintf(gp,
         "plot 'dados_grafico.dat' using 2:xtic(1) "
-        "title 'Medalhas'\n"
+        "lc rgb 'blue' title 'Total de medalhas', "
+        "'dados_grafico.dat' using 0:2:2 "
+        "with labels offset 0,0.5 notitle\n"
     );
-
+    // Força o envio dos comandos ao gnuplot, garantindo o funcionamento adequado
     fflush(gp);
-
+    // Mantém o gráfico aberto até que a tecla Enter seja pressionada
     printf("\nGrafico aberto. Pressione ENTER para fechar...\n");
     getchar();
-
+    // Fecha o gnuplot
     PCLOSE(gp);
 }
 void questao1exe(){
     // 1º questão: Para um esporte escolhido, mostre o ranking dos países com mais medalhas nesse esporte.
     limparBuffer();
+    // Leitura do esporte desejado
     printf("Digite o nome do esporte que deseja consultar\n> ");
     char esporte[32];
     fgets(esporte, sizeof(esporte), stdin);
     esporte[strcspn(esporte, "\n")] = '\0';
+    // Criação da lista de países, 'quantidade' guardará o número total de países
     int quantidade;
     Pais* paises = criarPaises(&quantidade);
+    // Com a lista contendo todos os países, agora as medalhas serão contabilizadas
     contarMedalhasPorPais(paises, quantidade, esporte);
+    // Ordena a lista por quantidade de medalhas
     ordenarPorMedalhas(paises, quantidade);
+    // Verifica se algo deu errado no processo
     if (paises[0].medalhas == 0) {
         printf("Esse esporte não existe, parça.\n");
         return;
     }
+    // Exibe o resultado no terminal
     printf("RANKING DOS PAISES QUE MAIS RECEBEM MEDALHAS EM: %s\n", esporte);
     for (int i = 0; i < 10; i++) {
         printf("%dº - %s: %d medalhas\n", i + 1, (paises + i)->nome, (paises + i)->medalhas);
     }
-    desenharGraficoTop10(paises, esporte);
+    // Mostra o gráfico do resultado
+    desenharGrafico(paises, esporte);
+    // Libera o espaço da lista de países
     free(paises);
+    // Finaliza a execeução da questão
     printf("Pressione Enter para voltar.");
     getchar();
 }
