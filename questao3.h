@@ -19,7 +19,7 @@ Atleta* todosAtletasMedalhistas(char *esporteescolhido, int *teste);
 
 void criaArquivoDados(Atleta medalhista);
 
-void criarGrafico(Atleta medalhista, char *esporte);
+void criandoGrafico(Atleta medalhista, char *esporte);
 
 void questao3exe();
 

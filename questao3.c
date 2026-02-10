@@ -182,7 +182,7 @@ void criaArquivoDados(Atleta medalhista) {
 
 /* Função que recebe o struct do atleta e o esporte para que tais informações possam ser usadas
 na confecção do gráfico. */
-void criarGrafico(Atleta medalhista, char *esporte) {
+void criandoGrafico(Atleta medalhista, char *esporte) {
     /* Utilizando a função anteriormente criada para fazer um arquivo com os dados
     que serão utilizados para criar o gráfico*/
     criaArquivoDados(medalhista);
@@ -260,8 +260,8 @@ void questao3exe(){
         printf("Pressione Enter para voltar.");
         getchar();
     } else if(escolha == 'S' || escolha == 's'){
-        /* Utilizando da função criarGrafico para exibir o gráfico dos dados obtidos. */
-        criarGrafico(Medalhistas[0], esporte);
+        /* Utilizando da função criandoGrafico para exibir o gráfico dos dados obtidos. */
+        criandoGrafico(Medalhistas[0], esporte);
     }
     /* Pausando para o usuário poder ver os resultados. */
     printf("\nPressione Enter para voltar.");

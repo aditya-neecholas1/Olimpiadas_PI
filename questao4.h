@@ -1,4 +1,4 @@
-#ifndef QUESTÃO4_H // Para definir a seguir a questão 4
+#ifndef QUESTAO4_H // Para definir a seguir a questão 4
 #define QUESTAO4_H
 
 // Definindo o valor das constantes prescritas abaixo. 
