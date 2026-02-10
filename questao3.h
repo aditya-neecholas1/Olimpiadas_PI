@@ -1,6 +1,14 @@
 #ifndef QUESTAO3_H
 #define QUESTAO3_H
 
+#ifdef _WIN32
+    #define POPEN _popen
+    #define PCLOSE _pclose
+#else
+    #define POPEN popen
+    #define PCLOSE pclose
+#endif
+
 /* A estrutura 'Atelta' será usada para armazenar as informações pertinentes de uma atleta.
 Neste caso, serão o seu athlete_id e suas medalhas.*/
 typedef struct {

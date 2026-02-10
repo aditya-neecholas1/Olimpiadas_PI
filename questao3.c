@@ -162,74 +162,57 @@ Atleta* todosAtletasMedalhistas(char *esporteescolhido, int *teste){
     fclose(ARQatletas);
     return Medalhistas;
 }
-
-/* Função que recebe o struct do atleta mais medalhista e cria um arquivo com seus dados relevates.*/
+// Função responsável por escrever um arquivo que contém as informações necessárias para a construção do gráfico
 void criaArquivoDados(Atleta medalhista) {
-    FILE *arqDados = fopen("dados_medalhista.txt", "w");
-    if(arqDados == NULL){
-        printf("Não foi possível criar o arquivo de dados.");
+    // Cria um arquivo em modo de escrita
+    FILE *dados = fopen("dados_medalhista.dat", "w");
+    // Verifica se não houve falha na criação do arquivo
+    if (!dados) {
+        printf("Erro ao criar arquivo de dados.\n");
         return;
     }
-    
-    /* Criando o arquivo e separando os dados em colunas, tal que a primeira irá conter o tipo de medalha,
-    a segunda suas respectivas quantidades e a terceira a coloração das barras que representarão as mesmas. */
-    fprintf(arqDados, "\"Ouro\" %d \"#FFD700\"\n", medalhista.medalhaOuro);
-    fprintf(arqDados, "\"Prata\" %d \"#C0C0C0\"\n", medalhista.medalhaPrata);
-    fprintf(arqDados, "\"Bronze\" %d \"#925518\"\n", medalhista.medalhaBronze);
-    
-    fclose(arqDados);
+    // Escreve no arquivo o tipo de cada medalha junto com sua quantidade
+    fprintf(dados, "\"Ouro\" %d \n", medalhista.medalhaOuro);
+    fprintf(dados, "\"Prata\" %d \n", medalhista.medalhaPrata);
+    fprintf(dados, "\"Bronze\" %d \n", medalhista.medalhaBronze);
+    // Termina a escrita e fecha o arquivo
+    fclose(dados);
 }
-
-/* Função que recebe o struct do atleta e o esporte para que tais informações possam ser usadas
-na confecção do gráfico. */
-void criandoGrafico(Atleta medalhista, char *esporte) {
-    /* Utilizando a função anteriormente criada para fazer um arquivo com os dados
-    que serão utilizados para criar o gráfico*/
+// Função que vai dessenhar o gráfico utilizando GnuPlot
+void criandoGrafico(Atleta medalhista, char* esporte) {
+    // Chama a função para criar e escrever o arquivo com as informações de um determinado atleta
     criaArquivoDados(medalhista);
-
-    /* Criando o arquivo .plt que originará o gráfico via gnuplot. */
-    FILE *script = fopen("scriptMedalhas.plt", "w");
-    if (script == NULL) {
-        printf("Erro ao criar o script do Gnuplot.\n");
+    // Abre um processo do gnuplot, que permite a comunicação entre os programas
+    FILE* script = POPEN("gnuplot", "w"); 
+    // Verifica se não houve falha na criação do processo
+    if (!script) {
+        printf("Erro ao abrir o gnuplot.\n");
         return;
     }
-
-    /* Configurando a saída: Definindo a altura e largura da imagem, fonte e forma de saída (png).*/
-    fprintf(script, "# Script para exibir as medalhas do atleta mais agraciado.\n");
-    fprintf(script, "set terminal wxt size 800,600 enhanced font 'Arial,12' title 'Grafico de Medalhas'\n");
-
-    /* Definindo o título do gráfico como o número de medalhas do atleta de um certo esporte.*/
-    fprintf(script, "set title 'Medalhas de %s\\n(Atleta mais vitorioso/a do esporte: %s)' font 'Arial,14 bold'\n", medalhista.nome, esporte);
-    /* Definindo o nome do eixo Y do gráfico.*/
-    fprintf(script, "set ylabel 'Quantidade de Medalhas'\n");
-    /* Definindo o nome do eixo X do gráfico.*/
-    fprintf(script, "set xlabel 'Tipo de Medalha'\n\n");
-
-    /* Definindo o preenchimento das barras. */
-    fprintf(script, "set style fill solid 0.8 border -1\n");
-    /* Estabelecendo a largura das barras.*/
-    fprintf(script, "set boxwidth 0.6\n");
-    /* Desenhando linhas "atrás" do gráfico para facilitar para o leitor das informações o valor indicado
-    pela altura da barra. */
+    // Configurações do gráfico
+    fprintf(script, "set terminal wxt size 1200,800 title 'Ranking de Medalhas'\n");
+    fprintf(script, "set title 'Medalhas de %s (Atleta mais bem-sucedido em %s)' font ',16'\n", medalhista.nome, esporte);
+    fprintf(script, "set ylabel 'Quantidade de Medalhas' font ',14'\n");
+    fprintf(script, "set style data histograms\n");
+    fprintf(script, "set style fill solid 1.0 border -1\n");
+    fprintf(script, "set boxwidth 0.5\n");
     fprintf(script, "set grid ytics\n");
-    /* Começando a partir do 0. */
-    fprintf(script, "set yrange [0:*]\n\n");
-
-    /* Estabelecendo a segunda coluna dos dados como a altura das barras, a primeira coluna como rótulo de cada
-    barra (ouro, prata ou bronze) e a terceira coluna como a cor de cada barra. */
-    fprintf(script, "plot 'dados_medalhista.txt' using 2:xtic(1):3 with boxes lc rgb variable notitle\n");
-
-    fclose(script);
-
-    /* Finalmente, executando a criação do gráfico: */
-    printf("\n Gerando imagem do grafico... \n");
-    int resultado = system("gnuplot -p scriptMedalhas.plt");
-    /* Utilizando da variável resultado para averiguar se a criação do gráfico ocorreu com sucesso ou não.*/
-    if (resultado != 0) {
-        printf("Erro ao executar o Gnuplot. \n");
-    }
+    fprintf(script, "set yrange [0:*]; set offsets 0, 0, 1, 0\n");
+    fprintf(script, "set ytics 2\n");
+    fprintf(script, "set xtics font ',12'\n"); 
+    fprintf(script, 
+        "plot 'dados_medalhista.dat' using 0:2:($0==0 ? 0xFFD700 : $0==1 ? 0xC0C0C0 : 0xCD7F32):xtic(1) "
+        "with boxes lc rgb variable notitle, "
+        "'' using 0:2:2 with labels offset 0,0.5 font ',12' notitle\n"
+    );
+    // Força o envio dos comandos ao gnuplot
+    fflush(script);
+    // Mantém o gráfico aberto até que a tecla Enter seja pressionada
+    printf("\nGráfico gerado com sucesso. Pressione ENTER para continuar...\n");
+    getchar();
+    // Fecha o processo
+    PCLOSE(script);
 }
-
 void questao3exe(){
     /*3ª questão: Para um determinado esporte, liste as medalhas conquistadas pelo atleta que chegou ao pódio mais vezes.*/
     limparBuffer();
