@@ -88,16 +88,28 @@ void contarAtletasPorPais(PaisAtletas* paises, int quantidade){
     fgets(linha, sizeof(linha), arquivo); // Descarta o cabeçalho
     // Loop de leitura do arquivo
     while(fgets(linha, sizeof(linha), arquivo) != NULL){
-        separarCampos(linha, campos, 10);
+        separarCampos(linha, campos, 15);
         // O nome do país/NOC está na coluna 6 do arquivo
         char* paisLido = campos[6];
         for(int i = 0; i < quantidade; i++){
-            /* O strstr erifica se o nome digitado está contido no nome,
-            prevenindo que casos como "Russia Federation" não sejam identificados
-            */
-            if(strstr(paisLido, paises[i].noc) != NULL){
-                paises[i].atletas++;
-                break; // Caso encontre, não precisa testar para os outros países
+            char *ptr = strstr(paisLido, paises[i].noc); // Busca se a palavra existe no texto do arquivo
+            if(ptr != NULL){
+                bool inicioOk = false, fimOk = false;
+                // Verificamos o caractere anterior ao início da palavra encontrada
+                // Se for o começo da string ou um separador do csv, é aceito
+                if(ptr == paisLido || *(ptr - 1) == ' ' || *(ptr - 1) == '"' ||
+                *(ptr - 1) == ',') inicioOk = true;
+                int tam = strlen(paises[i].noc);
+                // Aceita se for o fim da string ou um separador do csv 
+                if(*(ptr + tam) == '\0' || *(ptr + tam) == ' ' || *(ptr + tam) == ',' || 
+                *(ptr + tam) == '"')   fimOk = true;
+                // Verificador adicional para Russia
+                if(strcmp(paises[i].noc, "Russia") == 0 && *(ptr + tam) == 'n') fimOk = true;
+                // Se passou nos testes preventivos, conta o atleta
+                if(inicioOk && fimOk){
+                    paises[i].atletas++;
+                    break; // Pula para o próximo atleta;
+                }
             }
         }
     }
