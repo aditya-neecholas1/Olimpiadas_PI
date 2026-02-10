@@ -141,19 +141,19 @@ void processarArquivo(PaisGenero paises[], int *numPaises){
     /*Para melhor organização, coloquei uma ordenação crescente dos países com mais mulheres e imprime em tabela de maneira mais clara para o usuário.*/
     ordenarPaisesDecrescentes(paisesComMaisMulheres, total);
 
-    printf("PAÍSES QUE CONTÊM MAIS MULHERES DO QUE HOMENS\n");
+    printf("\n\nPAISES QUE CONTEM MAIS MULHERES DO QUE HOMENS\n");
 
     if (total == 0){
-        printf("Não existe país com mais atletas mulheres do que homens nas olimpiadas registradas.\n");
+        printf("Nao existe pais com mais atletas mulheres do que homens nas olimpiadas registradas.\n");
     }
     else{
-        printf("%s %s %s\n", "Pais", "Mulheres", "Homens");
+        printf("%s %s %s\n", "PAIS  |", "MULHERES  |", "HOMENS");
     
     for (int inteiro = 0; inteiro < total; inteiro++){
-        printf("%s %d %d\n", paisesComMaisMulheres[inteiro].nome, paisesComMaisMulheres[inteiro]. atletasFemininos, paisesComMaisMulheres[inteiro].atletasMasculinos);    
+        printf("%s | %d | %d\n", paisesComMaisMulheres[inteiro].nome, paisesComMaisMulheres[inteiro]. atletasFemininos, paisesComMaisMulheres[inteiro].atletasMasculinos);    
     }
 
-    printf("O total de países encontrados foi: %d\n", total);
+    printf("\nO TOTAL DE PAISES ENCONTRADO FOI: %d\n", total);
 
     }
 
@@ -165,11 +165,11 @@ void gerarArquivosDados(PaisGenero paises[], int numPaises){
     FILE* dados = fopen ("dadosPaises.txt", "w");
     // Faz a verificação se o arquivo foi criado ou não(pode ser o caso para arquivo sem permição, etc).
     if (dados==NULL){
-        printf("Não foi possível criar arquivo de dados para o gráfico.\n");
+        printf("Nao foi possivel criar arquivo de dados para o grafico.\n");
         return;
     }
     /*O "#" no gnuplot significa comentário, então esse código seria basicamente para escriver um comentário em primeira linha do arquivo como uma espécie de legenda para as colunas.*/
-    fprintf(dados, "# Relação Mulheres Homens\n");
+    fprintf(dados, "# Relacao Mulheres Homens\n");
 
     int limite;
     if (numPaises < 15){
@@ -204,7 +204,7 @@ void criarGrafico(PaisGenero paises[], int numPaises){
     }
 
     if (total == 0){
-        printf("\nNenhum país foi constatado tendo mais mulheres do que homens nesses eventos, portanto não foi possível gerar gráfico.\n");
+        printf("\nNenhum pais foi constatado tendo mais mulheres do que homens nesses eventos, portanto nao foi possivel gerar grafico.\n");
         return;
     }
 
@@ -216,12 +216,12 @@ void criarGrafico(PaisGenero paises[], int numPaises){
     //Aqui terá comandos do programa gnuplot ao criar e abrir esse novo arquivo "scriptGrafico".
     FILE *script = fopen ("scriptGrafico.plt", "w");
     if (script == NULL){
-        printf("Não foi possível criar script do gnuplot.\n");
+        printf("Nao foi possível criar script do gnuplot.\n");
         return;
     }
 
     //Comentário explicando o objetivo do script, nesse caso mostrar países com mais atletas mulheres.
-    fprintf(script, "Script- Países com mais atletas mulheres\n");
+    fprintf(script, "Script- Paises com mais atletas mulheres\n");
     //Faz definição do gráfico com png, tamanho 1200x800 pixels com biblioteca Cairo que está dentro do programa e fonte Arial tamanho 10
     fprintf(script, "set terminal pngcairo size 1200,800 enhanced font 'Arial,10'\n");
     // Esse é o nome do arquivo de saída onde a imagem do gráfico será salva. A quebra de duas linhas é por organização visual, nada funcional em si.
@@ -230,9 +230,9 @@ void criarGrafico(PaisGenero paises[], int numPaises){
     //Definição do título do topo do gráfico com a fonte em negrito, Arial tamanho 14.
     fprintf(script, "set title 'Paises com Mais Atletas Mulheres do que Homens' font 'Arial,14 bold'\n");
     //Eixo vertical definido como sendo a quantidade de atletas
-    fprintf(script, "set ylabel 'Número de Atletas' font 'Arial,12'\n");
+    fprintf(script, "set ylabel 'Numero de Atletas' font 'Arial,12'\n");
      //Eixo horizontal definido como sendo os países.
-    fprintf(script, "set xlabel 'Países' font 'Arial,12'\n\n");
+    fprintf(script, "set xlabel 'Paises' font 'Arial,12'\n\n");
 
     //Define o formato do gráfico como gráfico de barras
     fprintf(script, "set style data histograms\n");
@@ -261,17 +261,17 @@ void criarGrafico(PaisGenero paises[], int numPaises){
 
     fclose(script);
 
-    printf("\nVeja o gráfico abaixo:\n");
+    printf("\nVeja o grafico abaixo:\n");
     //Executa comando, processa o script e gera imagem
     int resultado = system ("gnuplot scriptGrafico.plt\n");
 
     if (resultado == 0){
-        printf("O gráfico foi bem executado: graficoPaises.png\n");
+        printf("O grafico foi bem executado: graficoPaises.png\n");
         printf("Nome do arquivo de dados: dadosPaises.txt\n");
         printf("Nome do arquivo script gerado: scriptGrafico.plt\n");
     }
     else {
-        printf("Não foi possível exetutar o programa. Confira se ele está instalado.\n");
+        printf("Nao foi possível exetutar o programa. Confira se ele esta instalado.\n");
         printf("   Os arquivos podem ser executados manualmente, pois de toda maneira foram criados:\n");
         //Comando de digitação manual para colocar no terminal e gerar o gráfico.
         printf("   gnuplot scriptGrafico.plt\n");
@@ -285,24 +285,24 @@ void questao4exe(){
     limparBuffer();
     PaisGenero paises [MAX_PAISES];
     int numPaises = 0;
-    printf("ANÁLISE DE ATLETAS POR PAÍS E GÊNERO\n");
-    printf("Você quer conferir a análise? Então pressione Enter");
+    printf("\nANALISE DE ATLETAS POR PAIS E GENERO\n");
+    printf("Voce quer conferir a analise? Entao pressione Enter");
     getchar();
     /*Processando o arquivo para leitura do csv e preenchimento do array*/
     processarArquivo(paises, &numPaises); 
-    printf("Seu pedido é uma ordem! Aqui está o total de países com mais atletas mulheres do que homens:");
+    printf("\nSeu pedido e uma ordem! Aqui esta o total de paises com mais atletas mulheres do que homens:\n");
     /*Usa os dados que foram preenchidos e finaliza*/
     listarPaises(paises, numPaises);
 
     /*Atualização de opção para mostrar o gráfico*/
-    printf("\n\nVocê quer ver o gráfico? (sim/não): ");
+    printf("\n\nVoce quer ver o grafico? (sim/nao): ");
     char opcao = getchar();
 
     if (opcao == 'sim' || opcao == 'SIM'){
         criarGrafico(paises, numPaises);
     }
 
-    printf("O que achou do resultado? Continue com a tecla Enter.");
+    printf("Chegamos ao fim que achou do resultado?");
     limparBuffer();
     getchar();
 }

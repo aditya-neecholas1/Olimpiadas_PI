@@ -317,7 +317,7 @@ void questao1exe(){
     ordenarPorMedalhas(paises, quantidade);
     // Verifica se algo deu errado no processo
     if (paises[0].medalhas == 0) {
-        printf("Esse esporte não existe, parça.\n");
+        printf("Esse esporte nao existe, parca.\n");
         return;
     }
     // Exibe o resultado no terminal

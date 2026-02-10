@@ -10,12 +10,12 @@
 int main() {
     int opcao;
     while(true){
-        printf("MENU - INFORMAÇÕES SOBRE AS OLIMPÍADAS\n");
+        printf("MENU - INFORMACOES SOBRE AS OLIMPIADAS\n");
         printf("Digite um dos numeros a seguir para utilizar o programa:\n");
-        printf("1 - Questao 1 - Ranking dos países por esporte\n");
-        printf("2 - Questao 2 - Ranking de 10 países por número de atletas\n");
-        printf("3 - Questao 3 - Listagem das medalhas conquistadas pelo atleta que chegou ao pódio mais vezes\n");
-        printf("4 - Questao 4 - Listagem dos países com mais atletas mulheres\n");
+        printf("1 - Questao 1 - Ranking dos paises por esporte\n");
+        printf("2 - Questao 2 - Ranking de 10 paises por numero de atletas\n");
+        printf("3 - Questao 3 - Listagem das medalhas conquistadas pelo atleta que chegou ao podio mais vezes\n");
+        printf("4 - Questao 4 - Listagem dos paises com mais atletas mulheres\n");
         printf("0 - Sair do programa\n");
         printf("Escolha uma opcao: ");
         scanf("%d", &opcao);

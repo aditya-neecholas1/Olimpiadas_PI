@@ -13,7 +13,7 @@ typedef struct {
     int atletasMasculinos;
 } PaisGenero;
 
-//Criando um 'protótipo' das funções utilizadas no arquivo de implementação abaixo
+//Criando um 'prototipo' das funções utilizadas no arquivo de implementação abaixo
 
 void processarArquivo (PaisGenero paises[], int *numPaises);
 void ordenarPaisesDecrescentes(PaisGenero paises[], int numPaises);

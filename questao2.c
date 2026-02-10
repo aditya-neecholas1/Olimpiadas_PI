@@ -125,7 +125,7 @@ void gerarGraficoGnuPlot(PaisAtletas* paises, int quantidade){
     FILE *dados = fopen("dados.dat", "w");
    // Checa se a abertura foi feita de forma correta 
     if(!dados){
-        printf("Erro ao criar arquivo de dados temporário.\n");
+        printf("Erro ao criar arquivo de dados temporario.\n");
         return;
     }
     for(int i = 0; i < quantidade; i++){
@@ -163,7 +163,7 @@ void questao2exe(){
     // Verificamos se algum país possui 0 atletas, o que indica digitação incorreta
     for(int i = 0; i < 10; i++){
         if(paisesEscolhidos[i].atletas == 0){
-            printf("O pais %s não possui atletas cadastrados, por favor verifique a grafia.\n", paisesEscolhidos[i].noc);
+            printf("O pais %s nao possui atletas cadastrados, por favor verifique a grafia.\n", paisesEscolhidos[i].noc);
         }
     }
     // Ordena o ranking dos 10 países
@@ -174,7 +174,7 @@ void questao2exe(){
         printf("%dº - %s: %d atletas cadastrados\n", i + 1, (paisesEscolhidos + i)->noc, (paisesEscolhidos + i)->atletas);
     }
     //  Chama a função que abre o Gnuplot
-    printf("Gráfico via Gnuplot sendo gerado em outra janela...");
+    printf("Grafico via Gnuplot sendo gerado em outra janela...");
     gerarGraficoGnuPlot(paisesEscolhidos, 10);
     // Devolve a memória alocada
     free(paisesEscolhidos);

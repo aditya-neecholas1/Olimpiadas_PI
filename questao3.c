@@ -208,7 +208,7 @@ void criandoGrafico(Atleta medalhista, char* esporte) {
     // Força o envio dos comandos ao gnuplot
     fflush(script);
     // Mantém o gráfico aberto até que a tecla Enter seja pressionada
-    printf("\nGráfico gerado com sucesso. Pressione ENTER para continuar...\n");
+    printf("\nGrafico gerado com sucesso. Pressione ENTER para continuar...\n");
     getchar();
     // Fecha o processo
     PCLOSE(script);
@@ -231,12 +231,12 @@ void questao3exe(){
     }
     int totalmedalhas = Medalhistas[0].medalhaBronze + Medalhistas[0].medalhaOuro + Medalhistas[0].medalhaPrata;
     /*Perguntando se o usuário gostaria de ver o resultado no terminal ou em gráfico.*/
-    printf("Exibir gráfico?(S/N)");
+    printf("Exibir grafico?(S/N)");
     char escolha; scanf(" %c", &escolha);
     limparBuffer();
     if(escolha == 'N' || escolha == 'n'){    
         /* Como a array já está ordenada em ordem decrescente, o mais medalhista está na posição de índice 0.*/
-        printf("Com um total de %d medalhas, %s é o/a atleta mais agraciado do esporte: %s. Isso, sendo: \n", totalmedalhas, Medalhistas[0].nome ,esporte);
+        printf("Com um total de %d medalhas, %s e o/a atleta mais agraciado do esporte: %s. Isso, sendo: \n", totalmedalhas, Medalhistas[0].nome ,esporte);
         printf("%d Medalhas de ouro!\n", Medalhistas[0].medalhaOuro);
         printf("%d Medalhas de prata!\n", Medalhistas[0].medalhaPrata);
         printf("%d Medalhas de bronze!\n", Medalhistas[0].medalhaBronze);
