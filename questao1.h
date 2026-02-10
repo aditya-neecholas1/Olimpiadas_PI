@@ -19,9 +19,20 @@ typedef struct {
     int medalhas;
 } Pais;
 
+typedef struct {
+    char evento[128];
+    char esporte[64];
+    char noc[4];
+    char tipo[8];
+} Medalha;
+
 void limparBuffer();
 
 Pais* criarPaises(int* quantidade);
+
+int medalhaJaContada(Medalha* contadas, int qtdeContadas, Medalha medalha);
+
+Medalha criarMedalha(char* jogos, char* evento, char* tipo, char* noc, char* esporte);
 
 void contarMedalhasPorPais(Pais* paises, int quantidade, char* esporte);
 

@@ -138,11 +138,35 @@ Pais* criarPaises(int* quantidade) {
     // Retorna a referência desse vetor de países
     return paises;
 }
+// Função que devolve um valor booleano que representa se a medalha analisada já está incluída em um array de medalhas
+int medalhaJaContada(Medalha* contadas, int qtdeContadas, Medalha medalha){
+    for (int i = 0; i < qtdeContadas; i++) {
+        if (!strcmp(contadas[i].evento, medalha.evento) && !strcmp(contadas[i].noc, medalha.noc) && !strcmp(contadas[i].esporte, medalha.esporte) && !strcmp(contadas[i].tipo, medalha.tipo))
+            return 1;
+    }
+    return 0;
+}
+// Função que cria uma medalha, atribuindo aos seus campos os argumentos recebidos
+Medalha criarMedalha(char* jogos, char* evento, char* tipo, char* noc, char* esporte) {
+    Medalha medalha;
+    strcpy(medalha.evento, jogos);
+    strcat(medalha.evento, evento);
+    strcpy(medalha.tipo, tipo);
+    strcpy(medalha.noc, noc);
+    strcpy(medalha.esporte, esporte);
+    return medalha;
+}
+
 /* Esta função é responsável por contar o número total de medalhas conquistadas por cada país em um determinado esporte.
 Ela recebe a lista de países, a quantidade de países e o nome do esporte que se deseja verificar. A função percorre o 
 arquivo principal e separa cada linha em seus respectivos campos, em seguida, verifica se o jogador representado na linha 
 recebeu uma medalha no respectivo evento, se sim, verifica o código NOC do jogador e incrementa o número de medalhas daquele país */
-void contarMedalhasPorPais(Pais* paises, int quantidade, char* esporte) {
+void contarMedalhasPorPais(Pais* paises, int qtdePaises, char* esporte) {
+    // Variáveis para representar a capacidade do array de medalhas contadas e a quantidade de medalhas que já foram inseridas (também serve para fazer o controle de inserção)
+    int capacidadeMedalhas = 100, qtdeContadas = 0;
+    // Array de medalhas que representa as medalhas que já foram contadas (Essa abordagem busca resolver um problema onde esportes coletivos influenciam muito mais no total de medalhas
+    // que um país conquistou, isso porque cada atleta recebe uma medalha)
+    Medalha* contadas = malloc(sizeof(Medalha) * capacidadeMedalhas);
     // Tentativa de abrir o arquivo que contém as informações sobre os eventos olímpicos
     FILE* arquivo = fopen("results.csv", "r");
     // Se a tentativa falhar, para a execução da função
@@ -173,8 +197,32 @@ void contarMedalhasPorPais(Pais* paises, int quantidade, char* esporte) {
         if (strcmp(campoEsporte, esporte) == 0 && medalhista) {
             // O 8º campo representa o código NOC do jogador (e é acessado pelo índice 7 do vetor 'campos')
             char* codigoNoc = campos[7];
+            // O 5º campo representa o tipo da medalha conquistada (e é acessado pelo índice 4 do vetor 'campos')
+            char* tipoMedalha = campos[4];
+            // O 1º campo representa em qual jogos olímpicos esse evento aconteceu (e é acessado pelo índice 0 do vetor 'campos')
+            char* jogos = campos[0];
+            // O 2º campo representa o evento (e é acessado pelo índice 1 do vetor 'campos')
+            char* evento = campos[1];
+            // Cria uma medalha com as informações lidas
+            Medalha medalha = criarMedalha(jogos, evento, tipoMedalha, codigoNoc, esporte);
+            // Verifica se essa medalha já foi contada anteriormente
+            if (medalhaJaContada(contadas, qtdeContadas, medalha))
+                continue;
+            // Faz a realocação do vetor de medalhas contadas caso a capacidade máxima tenha sido atingida
+            if (qtdeContadas >= capacidadeMedalhas) {
+                capacidadeMedalhas += 100;
+                Medalha* temp = realloc(contadas, capacidadeMedalhas * sizeof(Medalha));
+                if (!temp) {
+                    free(contadas);
+                    fclose(arquivo);
+                    return ;
+                }
+                contadas = temp;
+            }
+            // Adiciona a medalha ao array de medalhas contadas e incrementa a variável de quantidade 
+            contadas[qtdeContadas++] = medalha;
             // Percorre o vetor de países, sempre verificando se o código NOC dos países dentro do vetor é o mesmo lido no arquivo
-            for (int i = 0; i < quantidade; i++) {
+            for (int i = 0; i < qtdePaises; i++) {
                 // Aqui, um segundo laço é necessário, já que alguns países possuem mais que um código NOC
                 for (int j = 0; j < paises[i].qtdeNOCs; j++) {
                     if (strcmp(paises[i].codigosNOC[j], codigoNoc) == 0) {
@@ -185,6 +233,8 @@ void contarMedalhasPorPais(Pais* paises, int quantidade, char* esporte) {
             }
         }
     }
+    // Libera a memória ocupada pelo array de medalhas
+    free(contadas);
 }
 /* Função de comparação para o países tendo como critério o número total de medalhas. A função será usada em
 um qsort(), portanto, deve receber dois ponteiros genéricos */ 
@@ -234,6 +284,7 @@ void desenharGrafico(Pais* paises, char* esporte) {
     fprintf(gp, "set style fill solid 1 border -1\n");
     fprintf(gp, "set boxwidth 2\n");
     fprintf(gp, "set grid ytics\n");
+    fprintf(gp, "set yrange [0:*]; set offsets 0, 0, 1, 0\n");
     fprintf(gp, "set xtics rotate by -30\n");
     fprintf(gp,
         "plot 'dados_grafico.dat' using 2:xtic(1) "
