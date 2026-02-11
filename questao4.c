@@ -213,86 +213,48 @@ void criarGrafico(PaisGenero paises[], int numPaises){
     // Pega a função que cria o arquivo "dadosPaises.txt" criado acima com os países em ordem e filtrados.
     gerarArquivosDados(paisesComMaisMulheres, total);
 
-    //Aqui terá comandos do programa gnuplot ao criar e abrir esse novo arquivo "scriptGrafico".
-    FILE *script = fopen ("scriptGrafico.plt", "w");
+    //Abre um processo do gnuplot via pipe, permitindo comunicação direta entre os programas.
+    FILE *script = POPEN("gnuplot", "w");
     if (script == NULL){
-        printf("Nao foi possível criar script do gnuplot.\n");
+        printf("Nao foi possivel abrir o gnuplot. Confira se ele esta instalado.\n");
         return;
     }
 
-    /*Esse primeiro conjunto salva em png o gráfico*/
-    //Comentário explicando o objetivo do script, nesse caso mostrar países com mais atletas mulheres.
-    fprintf(script, "# Script- Paises com mais atletas mulheres\n");
-    //Faz definição do gráfico com png, tamanho 1200x800 pixels com biblioteca Cairo que está dentro do programa e fonte Arial tamanho 10
-    fprintf(script, "set terminal pngcairo size 1200,800 enhanced font 'Arial,10'\n");
-    // Esse é o nome do arquivo de saída onde a imagem do gráfico será salva. A quebra de duas linhas é por organização visual, nada funcional em si.
-    fprintf(script, "set output 'graficoPaises.png'\n\n");
-
-    //Definição do título do topo do gráfico com a fonte em negrito, Arial tamanho 14.
-    fprintf(script, "set title 'Paises com Mais Atletas Mulheres do que Homens' font 'Arial,14 bold'\n");
-    //Eixo vertical definido como sendo a quantidade de atletas
-    fprintf(script, "set ylabel 'Numero de Atletas' font 'Arial,12'\n");
-     //Eixo horizontal definido como sendo os países.
-    fprintf(script, "set xlabel 'Paises' font 'Arial,12'\n\n");
-     //Define o formato do gráfico como gráfico de barras
+    /*Esse conjunto abre a janela interativa, tamanho 1200x800 do gráfico*/
+    fprintf(script, "set terminal wxt size 1200,800 title 'Paises com Mais Atletas Mulheres'\n");
+    //Definição do título
+    fprintf(script, "set title 'PAISES COM MAIS ATLETAS MULHERES' font ',14'\n");
+    //Eixo vertical-quantidade de atletas
+    fprintf(script, "set ylabel 'Numero de Atletas' font ',12'\n");
+    //Eixo horizontal-países
+    fprintf(script, "set xlabel 'Paises' font ',12'\n");
+    //definição formato do gráfico
     fprintf(script, "set style data histograms\n");
-    //Gráfico com barras agrupadas com espaço de uma unidade entre grupo mulheres e homens.
-    fprintf(script, "set style histogram clustered gap 1\n");
-    //Aqui é pura estética, que seriam as barras preenchidas na cor sólida padrão com borda 
-    fprintf(script, "set style fill solid 0.8 border -1\n");
-    //Define pequeno espaço entra as barras do mesmo grupo.
-    fprintf(script, "set boxwidth 0.9\n\n");
-    //Nome dos países no eixo x na diagonal, evitando sobreposição
-    fprintf(script, "set xtics rotate by -45 font 'Arial,9'\n");
-    //Linhas de grade horizontais no eixo y.
+    // barras com cor sólida
+    fprintf(script, "set style fill solid 1.0 border -1\n");
+    //largura das barras definidas
+    fprintf(script, "set boxwidth 0.5\n");
+    //grade horizontais-eixo y
     fprintf(script, "set grid ytics\n");
-    //Legenda do gráfico posicionada fora do gráfico no canto superior direito
-    fprintf(script, "set key outside right top\n\n");
-    //As informações das mulheres na cor vermelha/rosada e dos homens em um verde/azulado, também por questões estéticas.
+    //nome países eixo x diagonal
+    fprintf(script, "set xtics rotate by -45 font ',9'\n");
+    // defini mulheres como cor vermelha/rosada e dos homens em um verde/azulado
     fprintf(script, "set linetype 1 lc rgb '#FF6C69'\n");
-    fprintf(script, "set linetype 2 lc rgb '#41E1C9'\n\n");
-
-    //Fiz um comando para desenhar o gráfico apartir do arquivo já definido dadosPaises, usando a coluna 2 das mulheres e aplicando a cor já definida anteriormente.
-    fprintf(script, "plot 'dadosPaises.txt' using 2:xtic(1) title 'Mulheres' lt 1, \\\n");
-    fprintf(script, " 'dadosPaises.txt' using 3 title 'Homens' lt 2\n\n");
-
-    /*Esse segundo conjunto abre a janela com o mesmo gráfico*/
-    fprintf(script, "set terminal qt size 1200,800 enhanced font 'Arial,10'\n");
-    //Ignora o arquivo definido de png do gráfico para abrir a janela
-    fprintf(script, "set output\n");
-    fprintf(script, "plot 'dadosPaises.txt' using 2:xtic(1) title 'Mulheres' lt 1, \\\n");
-    fprintf(script, " 'dadosPaises.txt' using 3 title 'Homens' lt 2\n");
-    //pausa até o usuário pressionar enter
-    fprintf(script, "pause -1 'Pressione Enter se desejar fechar o grafico.'\n");
-
-    
-    
-   
-
-    
-
-    //lê coluna das mulheres e usa coluna 1 como rótulo do eixo X. Além disso, aplica cor rosa (lt 1). Vai inverter uma barra e quebrar uma linha no final.
+    fprintf(script, "set linetype 2 lc rgb '#41E1C9'\n");
+    //lê coluna das mulheres desenhando o gráfico e usa coluna 1 como rótulo do eixo X. Além disso, aplica cor rosa (lt 1). Vai inverter uma barra e quebrar uma linha no final.
     fprintf(script, "plot 'dadosPaises.txt' using 2:xtic(1) title 'Mulheres' lt 1, \\\n");
     //Nesse caso utiliza o mesmo arquivo para a coluna de homens.
-    fprintf(script, "plot 'dadosPaises.txt' using 3 titles 'Homens' lt 2\n");
+    fprintf(script, "plot 'dadosPaises.txt' using 3 title 'Homens' lt 2\n");
 
-    fclose(script);
+    //envia comandos ao programa
+    fflush(script);
 
-    printf("\nVeja o grafico abaixo:\n");
-    //Executa comando, processa o script e gera imagem
-    int resultado = system ("gnuplot scriptGrafico.plt\n");
+    //só fecha se teclar enter
+    printf("\nGrafico gerado com sucesso. Pressione ENTER para continuar...\n");
+    getchar();
 
-    if (resultado == 0){
-        printf("O grafico foi bem executado: graficoPaises.png\n");
-        printf("Nome do arquivo de dados: dadosPaises.txt\n");
-        printf("Nome do arquivo script gerado: scriptGrafico.plt\n");
-    }
-    else {
-        printf("Nao foi possivel exetutar o programa. Confira se ele esta instalado.\n");
-        printf("   Os arquivos podem ser executados manualmente, pois de toda maneira foram criados:\n");
-        //Comando de digitação manual para colocar no terminal e gerar o gráfico.
-        printf("   gnuplot scriptGrafico.plt\n");
-    }
+    //fecha
+    PCLOSE(script);
 
 }
 

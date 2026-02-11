@@ -1,6 +1,14 @@
 #ifndef QUESTAO4_H // Para definir a seguir a questão 4
 #define QUESTAO4_H
 
+#ifdef _WIN32
+    #define POPEN _popen
+    #define PCLOSE _pclose
+#else
+    #define POPEN popen
+    #define PCLOSE pclose
+#endif
+
 // Definindo o valor das constantes prescritas abaixo. 
 #define MAX_PAISES 250
 #define MAX_NOME 100
